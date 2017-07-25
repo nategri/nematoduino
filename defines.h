@@ -1,5 +1,6 @@
 #define N_THRESHOLD 30
-#define N_TOTAL 397
+#define N_NTOTAL 397
+#define N_NMUSCLES 34
 
 #define N_ADAL 0
 #define N_ADAR 1
