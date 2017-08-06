@@ -1,5 +1,7 @@
 #include <avr/pgmspace.h>
 
+#include "motors.h"
+
 #include "defines.h"
 #include "neural_rom.h"
 #include "muscles.h"
@@ -145,14 +147,14 @@ void NeuralCycle() {
   }
 
   ActivateMuscles();
-  
   CopyStates();
 }
 
 void ActivateMuscles() {
   int32_t leftTotal = 0;
   int32_t rightTotal = 0;
-  
+
+  // Gather totals on left and right side muscles
   for(int i = 0; i < N_NMUSCLES; i++) {
     uint16_t leftId = pgm_read_word_near(LeftMuscles+i);
     uint16_t rightId = pgm_read_word_near(RightMuscles+i); 
@@ -164,9 +166,65 @@ void ActivateMuscles() {
     SetNextState(rightId, 0.0);
   }
 
-  Serial.println(rightTotal);
-  Serial.println(leftTotal);
-  Serial.println();
+  // Set speed for the motors
+  uint16_t muscleTotal = abs(leftTotal) + abs(rightTotal);
+  uint8_t motorSpeed;
+
+  if(motorSpeed > 150) {
+    motorSpeed = 255;
+  }
+  else if(motorSpeed < 75) {
+    motorSpeed =  180;
+  }
+  else {
+    motorSpeed = muscleTotal;
+  }
+
+  // Set direction of motors accoring to left and right side muscle weights
+  if(muscleTotal == 0) {
+    MotorsOff();
+  }
+  else if((leftTotal < 0) && (rightTotal <= 0)) {
+    double weightRatio = ((double) rightTotal) / ((double) leftTotal);
+    if(weightRatio <= 0.6) {
+      MotorsLeftTurn(motorSpeed);
+      delay(800);      
+    }
+    else if(weightRatio >= 2) {
+      MotorsRightTurn(motorSpeed);
+      delay(800);
+    }
+    MotorsBackward(motorSpeed);
+    delay(500);
+  }
+  else if((leftTotal <= 0) && (rightTotal >= 0)) {
+    MotorsRightTurn(motorSpeed);
+    delay(800);
+  }
+  else if((leftTotal >= 0) && (rightTotal <= 0)) {
+    MotorsLeftTurn(motorSpeed);
+    delay(800);
+  }
+  else if((leftTotal > 0) && (rightTotal >= 0)) {
+    double weightRatio = ((double) rightTotal) / ((double) leftTotal);
+    if(weightRatio <= 0.6) {
+      MotorsLeftTurn(motorSpeed);
+      delay(800);      
+    }
+    else if(weightRatio >= 2) {
+      MotorsRightTurn(motorSpeed);
+      delay(800);
+    }
+    MotorsForward(motorSpeed);
+    delay(500);
+  }
+  else {
+    MotorsOff();
+  }
+
+  //Serial.println(rightTotal);
+  //Serial.println(leftTotal);
+  //Serial.println();
 }
 
 void setup() {
@@ -175,9 +233,12 @@ void setup() {
 
   // initialize state arrays
   InitStates();
+
+  // Initialize motors
+  MotorsInit();
   
   // Test chemotaxis neurons
-  for(int i = 0; i < 100; i++) {
+  /*for(int i = 0; i < 100; i++) {
     
     PingNeuron(N_ADFL);
     PingNeuron(N_ADFR);
@@ -190,7 +251,9 @@ void setup() {
     
     NeuralCycle();
   }
-  Serial.println("Done");
+  Serial.println("Done");*/
+
+  //MotorsTest();
 
   /*for(int i=0; i < N_NTOTAL; i++) {
     Serial.println(i);
@@ -202,5 +265,15 @@ void setup() {
 void loop() {
   // put your main code here, to run repeatedly:
 
-
+  // Chemotaxis neurons
+  PingNeuron(N_ADFL);
+  PingNeuron(N_ADFR);
+  PingNeuron(N_ASGR);
+  PingNeuron(N_ASGL);
+  PingNeuron(N_ASIL);
+  PingNeuron(N_ASIR);
+  PingNeuron(N_ASJR);
+  PingNeuron(N_ASJL);
+    
+  NeuralCycle();
 }
