@@ -1,6 +1,7 @@
 #include <avr/pgmspace.h>
 
 #include "motors.h"
+#include "sensor.h"
 
 #include "defines.h"
 #include "neural_rom.h"
@@ -170,6 +171,9 @@ void ActivateMuscles() {
   uint16_t muscleTotal = abs(leftTotal) + abs(rightTotal);
   uint8_t motorSpeed;
 
+  uint16_t longRun = 100;
+  uint16_t shortRun = 60;
+
   if(motorSpeed > 150) {
     motorSpeed = 255;
   }
@@ -188,35 +192,35 @@ void ActivateMuscles() {
     double weightRatio = ((double) rightTotal) / ((double) leftTotal);
     if(weightRatio <= 0.6) {
       MotorsLeftTurn(motorSpeed);
-      delay(800);      
+      delay(longRun);      
     }
     else if(weightRatio >= 2) {
       MotorsRightTurn(motorSpeed);
-      delay(800);
+      delay(longRun);
     }
     MotorsBackward(motorSpeed);
-    delay(500);
+    delay(shortRun);
   }
   else if((leftTotal <= 0) && (rightTotal >= 0)) {
     MotorsRightTurn(motorSpeed);
-    delay(800);
+    delay(longRun);
   }
   else if((leftTotal >= 0) && (rightTotal <= 0)) {
     MotorsLeftTurn(motorSpeed);
-    delay(800);
+    delay(longRun);
   }
   else if((leftTotal > 0) && (rightTotal >= 0)) {
     double weightRatio = ((double) rightTotal) / ((double) leftTotal);
     if(weightRatio <= 0.6) {
       MotorsLeftTurn(motorSpeed);
-      delay(800);      
+      delay(longRun);      
     }
     else if(weightRatio >= 2) {
       MotorsRightTurn(motorSpeed);
-      delay(800);
+      delay(longRun);
     }
     MotorsForward(motorSpeed);
-    delay(500);
+    delay(shortRun);
   }
   else {
     MotorsOff();
@@ -236,10 +240,31 @@ void setup() {
 
   // Initialize motors
   MotorsInit();
-  
-  // Test chemotaxis neurons
-  /*for(int i = 0; i < 100; i++) {
-    
+
+  // Initial sensor
+  SensorInit();
+}
+
+void loop() {
+  // put your main code here, to run repeatedly:
+  long dist = SensorDistance();
+
+  if(dist < 50.0) {
+    // Nose touch neurons
+    PingNeuron(N_FLPR);
+    PingNeuron(N_FLPL);
+    PingNeuron(N_ASHL);
+    PingNeuron(N_ASHR);
+    PingNeuron(N_IL1VL);
+    PingNeuron(N_IL1VR);
+    PingNeuron(N_OLQDL);
+    PingNeuron(N_OLQDR);
+    PingNeuron(N_OLQVR);
+    PingNeuron(N_OLQVL);
+    NeuralCycle();
+  }
+  else {
+    // Chemotaxis neurons
     PingNeuron(N_ADFL);
     PingNeuron(N_ADFR);
     PingNeuron(N_ASGR);
@@ -248,32 +273,11 @@ void setup() {
     PingNeuron(N_ASIR);
     PingNeuron(N_ASJR);
     PingNeuron(N_ASJL);
-    
     NeuralCycle();
   }
-  Serial.println("Done");*/
 
-  //MotorsTest();
+  delay(500);
 
-  /*for(int i=0; i < N_NTOTAL; i++) {
-    Serial.println(i);
-    Serial.println(GetCurrState(i));
-    Serial.println();
-  }*/
-}
-
-void loop() {
-  // put your main code here, to run repeatedly:
-
-  // Chemotaxis neurons
-  PingNeuron(N_ADFL);
-  PingNeuron(N_ADFR);
-  PingNeuron(N_ASGR);
-  PingNeuron(N_ASGL);
-  PingNeuron(N_ASIL);
-  PingNeuron(N_ASIR);
-  PingNeuron(N_ASJR);
-  PingNeuron(N_ASJL);
-    
-  NeuralCycle();
+  Serial.println(dist);
+  //delay(500);
 }
