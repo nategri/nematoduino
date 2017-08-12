@@ -21,6 +21,9 @@ struct NeuralConnection {
 int8_t CurrConnectedState[N_NTOTAL];
 int8_t NextConnectedState[N_NTOTAL];
 
+// Array to track how many cycles a neuron has been idle
+uint8_t* IdleCycles = malloc(N_MAX*sizeof(uint8_t));
+
 // Another set for muscles that aren't connected to other cells
 int16_t* CurrMuscleState = malloc((N_NTOTAL-N_MAX)*sizeof(int16_t));
 int16_t* NextMuscleState = malloc((N_NTOTAL-N_MAX)*sizeof(int16_t));
@@ -31,6 +34,8 @@ void InitStates() {
   memset(NextConnectedState, 0, sizeof(NextConnectedState));
   memset(CurrMuscleState, 0, (N_NTOTAL-N_MAX)*sizeof(CurrMuscleState[0]));
   memset(NextMuscleState, 0, (N_NTOTAL-N_MAX)*sizeof(NextMuscleState[0]));
+
+  memset(IdleCycles, 0, N_MAX*sizeof(NextConnectedState[0]));
 }
 
 void SetCurrState(uint16_t N_ID, int8_t val) {
@@ -137,7 +142,7 @@ void PingNeuron(uint16_t N_ID) {
 
 void DischargeNeuron(uint16_t N_ID) {
   PingNeuron(N_ID);
-  SetNextState(N_ID, 0.0);
+  SetNextState(N_ID, 0);
 }
 
 void NeuralCycle() {
@@ -148,7 +153,20 @@ void NeuralCycle() {
   }
 
   ActivateMuscles();
+  HandleIdleNeurons();
   CopyStates();
+}
+
+void HandleIdleNeurons() {
+  for(int i = 0; i < N_MAX; i++) {
+    if(GetNextState(i) == GetCurrState(i)) {
+      IdleCycles[i] += 1;
+    }
+    if(IdleCycles[i] > 2) {
+      SetNextState(i, 0);
+      IdleCycles[i] = 0;
+    }
+  }
 }
 
 void ActivateMuscles() {
@@ -169,20 +187,36 @@ void ActivateMuscles() {
 
   // Set speed for the motors
   uint16_t muscleTotal = abs(leftTotal) + abs(rightTotal);
+
   uint8_t motorSpeed;
 
-  uint16_t longRun = 100;
-  uint16_t shortRun = 60;
+  uint16_t longRun = 700;
+  uint16_t shortRun = 300;
 
-  if(motorSpeed > 150) {
-    motorSpeed = 255;
+  uint8_t longTimeUnits = 30;
+  uint8_t shortTimeUnits = 10;
+
+  /*if(motorSpeed > 150) {
+    motorSpeed = 160;
   }
   else if(motorSpeed < 75) {
-    motorSpeed =  180;
+    motorSpeed =  160;
   }
   else {
     motorSpeed = muscleTotal;
+  }*/
+
+  Serial.println(muscleTotal);
+
+  if(muscleTotal > 255) {
+    motorSpeed = 255;
   }
+  else{
+    motorSpeed = muscleTotal;
+  }
+
+
+  bool useCustomPwm = true;
 
   // Set direction of motors accoring to left and right side muscle weights
   if(muscleTotal == 0) {
@@ -190,37 +224,29 @@ void ActivateMuscles() {
   }
   else if((leftTotal < 0) && (rightTotal <= 0)) {
     double weightRatio = ((double) rightTotal) / ((double) leftTotal);
-    if(weightRatio <= 0.6) {
-      MotorsLeftTurn(motorSpeed);
-      delay(longRun);      
+    if(weightRatio <= 0.75) {
+      MotorsLeftTurnPwm(motorSpeed, longTimeUnits, useCustomPwm);    
     }
-    else if(weightRatio >= 2) {
-      MotorsRightTurn(motorSpeed);
-      delay(longRun);
+    else if(weightRatio >= 1.33333) {
+      MotorsRightTurnPwm(motorSpeed, longTimeUnits, useCustomPwm);
     }
-    MotorsBackward(motorSpeed);
-    delay(shortRun);
+    MotorsBackwardPwm(motorSpeed, shortTimeUnits, useCustomPwm);
   }
   else if((leftTotal <= 0) && (rightTotal >= 0)) {
-    MotorsRightTurn(motorSpeed);
-    delay(longRun);
+    MotorsRightTurnPwm(motorSpeed, longTimeUnits, useCustomPwm);
   }
   else if((leftTotal >= 0) && (rightTotal <= 0)) {
-    MotorsLeftTurn(motorSpeed);
-    delay(longRun);
+    MotorsLeftTurnPwm(motorSpeed, longTimeUnits, useCustomPwm);
   }
   else if((leftTotal > 0) && (rightTotal >= 0)) {
     double weightRatio = ((double) rightTotal) / ((double) leftTotal);
-    if(weightRatio <= 0.6) {
-      MotorsLeftTurn(motorSpeed);
-      delay(longRun);      
+    if(weightRatio <= 0.75) {
+      MotorsLeftTurnPwm(motorSpeed, longTimeUnits, useCustomPwm);     
     }
-    else if(weightRatio >= 2) {
-      MotorsRightTurn(motorSpeed);
-      delay(longRun);
+    else if(weightRatio >= 1.33333) {
+      MotorsRightTurnPwm(motorSpeed, longTimeUnits, useCustomPwm);
     }
-    MotorsForward(motorSpeed);
-    delay(shortRun);
+    MotorsForwardPwm(motorSpeed, shortTimeUnits, useCustomPwm);
   }
   else {
     MotorsOff();
@@ -274,10 +300,9 @@ void loop() {
     PingNeuron(N_ASJR);
     PingNeuron(N_ASJL);
     NeuralCycle();
+    //delay(300);
   }
 
-  delay(500);
-
-  Serial.println(dist);
+  //Serial.println(dist);
   //delay(500);
 }

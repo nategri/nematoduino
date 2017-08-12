@@ -41,9 +41,48 @@ void leftMotorOff() {
   digitalWrite(leftPinB, LOW);
 }
 
+void MotorsOff() {
+  leftMotorOff();
+  rightMotorOff();
+}
+
+void pwmDigital(void (*motorsOn)(uint8_t), uint16_t spd, uint8_t timeUnits) {
+  
+  float normSpd = (float) spd / 255.0;
+
+  uint8_t onDelay = (uint8_t) 30*normSpd;
+  if(onDelay < 15) {
+    onDelay = 15;
+  }
+  
+  uint8_t offDelay = 30 - onDelay;
+
+  uint8_t motorSpd = 255;
+  if(spd < 0) {
+    motorSpd = 0;
+  }
+  
+  for(int i = 0; i < timeUnits; i++) {
+    motorsOn(motorSpd);
+    delay(onDelay);
+    MotorsOff();
+    delay(offDelay);
+  }
+}
+
 void MotorsForward(uint8_t spd) {
   leftMotorForward(spd);
   rightMotorForward(spd);
+}
+
+void MotorsForwardPwm(uint8_t spd, uint8_t timeUnits, bool use) {
+  if(use == true) {
+    pwmDigital(MotorsForward, spd, timeUnits);
+  }
+  else {
+    MotorsForward(spd);
+    delay(300);
+  }
 }
 
 void MotorsBackward(uint8_t spd) {
@@ -51,9 +90,14 @@ void MotorsBackward(uint8_t spd) {
   rightMotorBackward(spd);
 }
 
-void MotorsOff() {
-  leftMotorOff();
-  rightMotorOff();
+void MotorsBackwardPwm(uint8_t spd, uint8_t timeUnits, bool use) {
+  if(use == true) {
+    pwmDigital(MotorsBackward, spd, timeUnits);
+  }
+  else {
+    MotorsBackward(spd);
+    delay(300);
+  }
 }
 
 void MotorsLeftTurn(uint8_t spd) {
@@ -61,9 +105,29 @@ void MotorsLeftTurn(uint8_t spd) {
   rightMotorBackward(spd);
 }
 
+void MotorsLeftTurnPwm(uint8_t spd, uint8_t timeUnits, bool use) {
+  if(use == true) {
+    pwmDigital(MotorsLeftTurn, spd, timeUnits);
+  }
+  else {
+    MotorsLeftTurn(spd);
+    delay(500);
+  }
+}
+
 void MotorsRightTurn(uint8_t spd) {
   rightMotorForward(spd);
   leftMotorBackward(spd);
+}
+
+void MotorsRightTurnPwm(uint8_t spd, uint8_t timeUnits, bool use) {
+  if(use == true) {
+    pwmDigital(MotorsRightTurn, spd, timeUnits);
+  }
+  else {
+    MotorsRightTurn(spd);
+    delay(500);
+  }
 }
 
 void MotorsTest() {
