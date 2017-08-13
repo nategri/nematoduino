@@ -1,8 +1,8 @@
 const uint8_t rightPinA = 9;
 const uint8_t rightPinB = 10;
 
-const uint8_t leftPinA = 5;
-const uint8_t leftPinB = 6;
+const uint8_t leftPinA = 3;
+const uint8_t leftPinB = 11;
 
 void MotorsInit() {
   pinMode(leftPinA, OUTPUT);
@@ -39,6 +39,64 @@ void leftMotorBackward(uint8_t spd) {
 void leftMotorOff() {
   digitalWrite(leftPinA, LOW);
   digitalWrite(leftPinB, LOW);
+}
+
+void RunMotors(int16_t leftSpd, int16_t rightSpd) {
+  uint8_t leftSpdMotor;
+  uint8_t rightSpdMotor;
+  
+  // Left forward
+  if(leftSpd >= 0) {
+    leftSpd += 65;
+    if(leftSpd > 255) {
+      leftSpdMotor = 255;
+    }
+    else {
+      leftSpdMotor = leftSpd;
+    }
+    leftMotorForward(leftSpdMotor);
+  }
+  // Left backward
+  else if(leftSpd < 0) {
+    leftSpd -= 65;
+    if(abs(leftSpd) > 255) {
+      leftSpdMotor = 255;
+    }
+    else {
+      leftSpdMotor = abs(leftSpd);
+    }
+    leftMotorBackward(leftSpdMotor);
+  }
+
+    // Right forward
+  if(rightSpd >= 0) {
+    rightSpd += 65;
+    if(rightSpd > 255) {
+      rightSpdMotor = 255;
+    }
+    else {
+      rightSpdMotor = rightSpd;
+    }
+    rightMotorForward(rightSpdMotor);
+  }
+  // Right backward
+  else if(rightSpd < 0) {
+    rightSpd -= 65;
+    if(abs(rightSpd) > 255) {
+      rightSpdMotor = 255;
+    }
+    else {
+      rightSpdMotor = abs(rightSpd);
+    }
+    rightMotorBackward(rightSpdMotor);
+  }
+
+  if((rightSpd > 0) && (leftSpd < 0)) {
+    delay(600);
+  }
+  else if((rightSpd < 0) && (leftSpd > 0)) {
+    delay(600);
+  }
 }
 
 void MotorsOff() {

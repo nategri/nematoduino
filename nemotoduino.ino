@@ -7,6 +7,8 @@
 #include "neural_rom.h"
 #include "muscles.h"
 
+#include "led.h"
+
 // Total number of connected neurons (first word in ROM)
 uint16_t const N_MAX = (uint16_t)NeuralROM[0];
 
@@ -162,7 +164,7 @@ void HandleIdleNeurons() {
     if(GetNextState(i) == GetCurrState(i)) {
       IdleCycles[i] += 1;
     }
-    if(IdleCycles[i] > 2) {
+    if(IdleCycles[i] > 10) {
       SetNextState(i, 0);
       IdleCycles[i] = 0;
     }
@@ -196,61 +198,8 @@ void ActivateMuscles() {
   uint8_t longTimeUnits = 30;
   uint8_t shortTimeUnits = 10;
 
-  /*if(motorSpeed > 150) {
-    motorSpeed = 160;
-  }
-  else if(motorSpeed < 75) {
-    motorSpeed =  160;
-  }
-  else {
-    motorSpeed = muscleTotal;
-  }*/
-
-  Serial.println(muscleTotal);
-
-  if(muscleTotal > 255) {
-    motorSpeed = 255;
-  }
-  else{
-    motorSpeed = muscleTotal;
-  }
-
-
-  bool useCustomPwm = true;
-
-  // Set direction of motors accoring to left and right side muscle weights
-  if(muscleTotal == 0) {
-    MotorsOff();
-  }
-  else if((leftTotal < 0) && (rightTotal <= 0)) {
-    double weightRatio = ((double) rightTotal) / ((double) leftTotal);
-    if(weightRatio <= 0.75) {
-      MotorsLeftTurnPwm(motorSpeed, longTimeUnits, useCustomPwm);    
-    }
-    else if(weightRatio >= 1.33333) {
-      MotorsRightTurnPwm(motorSpeed, longTimeUnits, useCustomPwm);
-    }
-    MotorsBackwardPwm(motorSpeed, shortTimeUnits, useCustomPwm);
-  }
-  else if((leftTotal <= 0) && (rightTotal >= 0)) {
-    MotorsRightTurnPwm(motorSpeed, longTimeUnits, useCustomPwm);
-  }
-  else if((leftTotal >= 0) && (rightTotal <= 0)) {
-    MotorsLeftTurnPwm(motorSpeed, longTimeUnits, useCustomPwm);
-  }
-  else if((leftTotal > 0) && (rightTotal >= 0)) {
-    double weightRatio = ((double) rightTotal) / ((double) leftTotal);
-    if(weightRatio <= 0.75) {
-      MotorsLeftTurnPwm(motorSpeed, longTimeUnits, useCustomPwm);     
-    }
-    else if(weightRatio >= 1.33333) {
-      MotorsRightTurnPwm(motorSpeed, longTimeUnits, useCustomPwm);
-    }
-    MotorsForwardPwm(motorSpeed, shortTimeUnits, useCustomPwm);
-  }
-  else {
-    MotorsOff();
-  }
+  RunMotors(leftTotal, rightTotal);
+  delay(5);
 
   //Serial.println(rightTotal);
   //Serial.println(leftTotal);
@@ -267,8 +216,21 @@ void setup() {
   // Initialize motors
   MotorsInit();
 
-  // Initial sensor
+  // Initialize sensor
   SensorInit();
+
+  // Initialize status LED
+  LedInit();
+
+  // Initialize button
+  // And loop until pressed
+  pinMode(13, INPUT_PULLUP);
+  while(true) {
+    if(digitalRead(13) == LOW) {
+      break;
+    }
+    //delay(500);
+  }
 }
 
 void loop() {
@@ -276,6 +238,9 @@ void loop() {
   long dist = SensorDistance();
 
   if(dist < 50.0) {
+    // Status LED on
+    LedOn();
+    
     // Nose touch neurons
     PingNeuron(N_FLPR);
     PingNeuron(N_FLPL);
@@ -290,6 +255,9 @@ void loop() {
     NeuralCycle();
   }
   else {
+    // Status LED off
+    LedOff();
+    
     // Chemotaxis neurons
     PingNeuron(N_ADFL);
     PingNeuron(N_ADFR);
