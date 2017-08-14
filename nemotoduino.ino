@@ -7,31 +7,46 @@
 #include "neural_rom.h"
 #include "muscles.h"
 
-#include "led.h"
+#include "status_led.h"
+#include "button.h"
+
+//
+// Global constants
+//
 
 // Total number of connected neurons (first word in ROM)
 uint16_t const N_MAX = (uint16_t)NeuralROM[0];
 
+//
+// Structs
+//
+
+// Struct for representing a neuron connection
 struct NeuralConnection {
   uint16_t id;
   int8_t weight;
 };
 
-// Two sets of state arrays
+//
+// Three sets of neural state arrays
+//
 
 // One set for neurons that are connected to others
 int8_t CurrConnectedState[N_NTOTAL];
 int8_t NextConnectedState[N_NTOTAL];
 
-// Array to track how many cycles a neuron has been idle
-uint8_t* IdleCycles = malloc(N_MAX*sizeof(uint8_t));
-
 // Another set for muscles that aren't connected to other cells
 int16_t* CurrMuscleState = malloc((N_NTOTAL-N_MAX)*sizeof(int16_t));
 int16_t* NextMuscleState = malloc((N_NTOTAL-N_MAX)*sizeof(int16_t));
 
+// Final set to track how many cycles a neuron has been idle
+uint8_t* IdleCycles = malloc(N_MAX*sizeof(uint8_t));
+
+//
 // Functions for getting and setting these states
-void InitStates() {
+//
+
+void StatesInit() {
   memset(CurrConnectedState, 0, sizeof(CurrConnectedState));
   memset(NextConnectedState, 0, sizeof(NextConnectedState));
   memset(CurrMuscleState, 0, (N_NTOTAL-N_MAX)*sizeof(CurrMuscleState[0]));
@@ -90,14 +105,17 @@ void AddToNextState(uint16_t N_ID, int8_t val) {
   SetNextState(N_ID, currVal + val);
 }
 
+// Copy 'next' state into 'current' state
 void CopyStates() {
   memcpy(CurrConnectedState, NextConnectedState, sizeof(NextConnectedState));
   memcpy(CurrMuscleState, NextMuscleState, (N_NTOTAL-N_MAX)*sizeof(NextMuscleState[0]));
 }
 
-// Array to track how many cycles neurons have been inactive
-uint8_t NumCyclesInactive[N_NTOTAL];
+//
+// Functions for handling connectome simulation
+//
 
+// Parse a word of the ROM into a neuron id and connection weight
 NeuralConnection ParseROM(uint16_t romWord) {
   uint8_t* romByte;
   romByte = (uint8_t*)&romWord;
@@ -110,13 +128,10 @@ NeuralConnection ParseROM(uint16_t romWord) {
 
   NeuralConnection neuralConn = {id, weight};
 
-  //Serial.println(id);
-  //Serial.println(weight);
-  //Serial.println();
-
   return neuralConn;
 }
 
+// Propagate each neuron connection weight into the next state
 void PingNeuron(uint16_t N_ID) {
   uint16_t address = pgm_read_word_near(NeuralROM+N_ID+1);
   uint16_t len = pgm_read_word_near(NeuralROM+N_ID+1+1) - pgm_read_word_near(NeuralROM+N_ID+1);
@@ -126,19 +141,7 @@ void PingNeuron(uint16_t N_ID) {
   for(int i = 0; i<len; i++) {
     NeuralConnection neuralConn = ParseROM(pgm_read_word_near(NeuralROM+address+i));
 
-    //if (fabs(NextState[neuralConn.id]) <= N_THRESHOLD) {
-      //NextState[neuralConn.id] += neuralConn.weight;
-    //}
-    //NextState[neuralConn.id] += neuralConn.weight;
-
     AddToNextState(neuralConn.id, neuralConn.weight);
-
-    /*if(fabs(GetNextState(neuralConn.id)) > 128.0) {
-      Serial.println(neuralConn.id);
-      Serial.println(GetNextState(neuralConn.id));
-      Serial.println();
-    }*/
-    
   }
 }
 
@@ -147,6 +150,7 @@ void DischargeNeuron(uint16_t N_ID) {
   SetNextState(N_ID, 0);
 }
 
+// Complete one cycle ('tick') of the nematode neural system
 void NeuralCycle() {
   for(int i = 0; i < N_MAX; i++) {
     if (fabs(GetCurrState(i)) > N_THRESHOLD) {
@@ -159,6 +163,7 @@ void NeuralCycle() {
   CopyStates();
 }
 
+// Flush neurons that have been idle for a while
 void HandleIdleNeurons() {
   for(int i = 0; i < N_MAX; i++) {
     if(GetNextState(i) == GetCurrState(i)) {
@@ -170,6 +175,10 @@ void HandleIdleNeurons() {
     }
   }
 }
+
+//
+// Function for determinining how muscle weights map to motors
+//
 
 void ActivateMuscles() {
   int32_t leftTotal = 0;
@@ -190,28 +199,24 @@ void ActivateMuscles() {
   // Set speed for the motors
   uint16_t muscleTotal = abs(leftTotal) + abs(rightTotal);
 
-  uint8_t motorSpeed;
-
-  uint16_t longRun = 700;
-  uint16_t shortRun = 300;
-
-  uint8_t longTimeUnits = 30;
-  uint8_t shortTimeUnits = 10;
-
   RunMotors(leftTotal, rightTotal);
   delay(5);
-
-  //Serial.println(rightTotal);
-  //Serial.println(leftTotal);
-  //Serial.println();
 }
+
+//
+// Standard Arduino setup and loop functions
+//
 
 void setup() {
   // put your setup code here, to run once:
+
+  /*
+  Uncomment for serial debugging
   Serial.begin(9600);
+  */
 
   // initialize state arrays
-  InitStates();
+  StatesInit();
 
   // Initialize motors
   MotorsInit();
@@ -220,16 +225,16 @@ void setup() {
   SensorInit();
 
   // Initialize status LED
-  LedInit();
+  StatusLedInit();
 
   // Initialize button
-  // And loop until pressed
-  pinMode(13, INPUT_PULLUP);
+  ButtonInit();
+
+  // Loop until pressed
   while(true) {
-    if(digitalRead(13) == LOW) {
+    if(ButtonPress()) {
       break;
     }
-    //delay(500);
   }
 }
 
@@ -239,7 +244,7 @@ void loop() {
 
   if(dist < 50.0) {
     // Status LED on
-    LedOn();
+    StatusLedOn();
     
     // Nose touch neurons
     PingNeuron(N_FLPR);
@@ -256,7 +261,7 @@ void loop() {
   }
   else {
     // Status LED off
-    LedOff();
+    StatusLedOff();
     
     // Chemotaxis neurons
     PingNeuron(N_ADFL);
@@ -268,9 +273,5 @@ void loop() {
     PingNeuron(N_ASJR);
     PingNeuron(N_ASJL);
     NeuralCycle();
-    //delay(300);
   }
-
-  //Serial.println(dist);
-  //delay(500);
 }

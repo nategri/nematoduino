@@ -1,8 +1,6 @@
-// Define transmit and receive pins
 // Reference: http://www.instructables.com/id/Simple-Arduino-and-HC-SR04-Example/
 
-const uint8_t tPin = 2;
-const uint8_t rPin = 4;
+#include "pin_config.h"
 
 void SensorInit() {
   pinMode(tPin, OUTPUT);
