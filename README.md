@@ -4,7 +4,13 @@ on an Arduino Uno (AtMega328). It is based heavily upon the file
 
 https://github.com/Connectome/GoPiGo
 
-This software is a work in progress. Currently all it does is dump
-the weights on the left and right muscles over the serial port.
+This should still be considered beta software.
 
-Nematoduino is covered on the GNU Public License v2.
+Arduino pin assignments can be configured in `pin_config.h`. Note
+that all motor pins are PWM capable, with the same carrier frequency.
+
+The C. Elegans 'chemotaxis' (food sensing) neurons are stimulated by
+default, while the 'nose touch' response neurons are stimulated when
+the robot senses an obstacle at a distance of 50 cm or less.
+
+Nematoduino is covered under the GNU Public License v2.
