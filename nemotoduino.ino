@@ -196,10 +196,38 @@ void ActivateMuscles() {
     SetNextState(rightId, 0.0);
   }
 
-  // Set speed for the motors
-  uint16_t muscleTotal = abs(leftTotal) + abs(rightTotal);
+  int8_t motorNeuronASum = 0;
+  int8_t motorNeuronBSum = 0;
 
-  RunMotors(leftTotal, rightTotal);
+  for(int i = 0; i < N_MOTORB; i++) {
+    uint8_t motorBId = pgm_read_word_near(MotorNeuronsB+i);
+    if(GetCurrState(motorBId) > N_THRESHOLD) {
+      motorNeuronBSum += 1;
+    }
+  }
+
+  for(int i = 0; i < N_MOTORA; i++) {
+    uint8_t motorAId = pgm_read_word_near(MotorNeuronsA+i);
+    if(GetCurrState(motorAId) > N_THRESHOLD) {
+      motorNeuronASum += 1;
+    }
+  }
+
+  // Set speed for the motors
+  //uint16_t muscleTotal = abs(leftTotal) + abs(rightTotal);
+
+  Serial.println(motorNeuronBSum);
+  Serial.println(motorNeuronASum);
+  Serial.println();
+
+  //float motorNeuronRatio = ((float) motorNeuronASum) / ((float) motorNeuronBSum);
+
+  if(motorNeuronASum >= (2.7*motorNeuronBSum)) {
+    RunMotors(-1*rightTotal, -1*leftTotal);
+  }
+  else {
+    RunMotors(rightTotal, leftTotal);
+  }
   delay(5);
 }
 
@@ -210,10 +238,10 @@ void ActivateMuscles() {
 void setup() {
   // put your setup code here, to run once:
 
-  /*
-  Uncomment for serial debugging
+  
+  //Uncomment for serial debugging
   Serial.begin(9600);
-  */
+  
 
   // initialize state arrays
   StatesInit();
