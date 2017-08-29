@@ -228,7 +228,7 @@ void ActivateMuscles() {
   else {
     RunMotors(rightTotal, leftTotal);
   }
-  delay(5);
+  delay(20);
 }
 
 //
