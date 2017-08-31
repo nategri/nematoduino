@@ -181,21 +181,41 @@ void HandleIdleNeurons() {
 //
 
 void ActivateMuscles() {
-  int32_t leftTotal = 0;
-  int32_t rightTotal = 0;
+  int32_t bodyTotal = 0;
 
   // Gather totals on left and right side muscles
-  for(int i = 0; i < N_NMUSCLES; i++) {
-    uint16_t leftId = pgm_read_word_near(LeftMuscles+i);
-    uint16_t rightId = pgm_read_word_near(RightMuscles+i); 
+  for(int i = 0; i < N_NBODYMUSCLES; i++) {
+    uint16_t leftId = pgm_read_word_near(LeftBodyMuscles+i);
+    uint16_t rightId = pgm_read_word_near(RightBodyMuscles+i); 
 
-    leftTotal += GetNextState(leftId);
-    rightTotal += GetNextState(rightId);
+    bodyTotal += (abs(GetNextState(leftId)) + abs(GetNextState(rightId)));
 
     SetNextState(leftId, 0.0);
     SetNextState(rightId, 0.0);
   }
 
+  // Gather total for neck muscles
+  int32_t leftNeckTotal = 0;
+  int32_t rightNeckTotal = 0;
+  for(int i = 0; i < N_NNECKMUSCLES; i++) {
+    //uint16_t leftId = LeftBodyMuscles[i];
+    //uint16_t rightId = RightBodyMuscles[i]; 
+
+    uint16_t leftId = pgm_read_word_near(LeftNeckMuscles+i);
+    uint16_t rightId = pgm_read_word_near(RightNeckMuscles+i); 
+
+    leftNeckTotal += GetNextState(leftId);
+    rightNeckTotal += GetNextState(rightId);
+
+    SetNextState(leftId, 0.0);
+    SetNextState(rightId, 0.0);
+  }
+
+
+  int32_t normBodyTotal = 255.0 * ((float) bodyTotal) / 600.0;
+  Serial.println(normBodyTotal);
+
+  // Log A and B type motor neuron activity
   int8_t motorNeuronASum = 0;
   int8_t motorNeuronBSum = 0;
 
@@ -215,9 +235,12 @@ void ActivateMuscles() {
 
   // Set speed for the motors
   //uint16_t muscleTotal = abs(leftTotal) + abs(rightTotal);
+  
+  int32_t leftTotal = leftNeckTotal + normBodyTotal;
+  int32_t rightTotal = rightNeckTotal + normBodyTotal;
 
-  Serial.println(motorNeuronBSum);
-  Serial.println(motorNeuronASum);
+  Serial.println(leftNeckTotal);
+  Serial.println(rightNeckTotal);
   Serial.println();
 
   //float motorNeuronRatio = ((float) motorNeuronASum) / ((float) motorNeuronBSum);
@@ -228,7 +251,7 @@ void ActivateMuscles() {
   else {
     RunMotors(rightTotal, leftTotal);
   }
-  delay(20);
+  delay(100);
 }
 
 //

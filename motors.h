@@ -1,7 +1,7 @@
 #include "pin_config.h"
 
-const uint8_t spdBoost = 65;
-const uint8_t turnTime = 600;
+const uint8_t spdBoost = 0;
+const uint8_t turnTime = 0;
 
 void MotorsInit() {
   pinMode(leftMotorPinA, OUTPUT);
