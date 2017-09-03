@@ -212,7 +212,7 @@ void ActivateMuscles() {
   }
 
 
-  int32_t normBodyTotal = 255.0 * ((float) bodyTotal) / 600.0;
+  int32_t normBodyTotal = 255.0 * ((float) bodyTotal) / 550.0;
   Serial.println(normBodyTotal);
 
   // Log A and B type motor neuron activity

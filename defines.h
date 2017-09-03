@@ -1,6 +1,6 @@
 #define N_THRESHOLD 30
 #define N_NTOTAL 397
-#define N_NBODYMUSCLES 34
+#define N_NBODYMUSCLES 30
 #define N_NNECKMUSCLES 8
 #define N_MOTORA 18
 #define N_MOTORB 21
