@@ -22,6 +22,7 @@ N_MVR09, N_MVR10, N_MVR11, N_MVR12, N_MVR13, N_MVR14, N_MVR15,
 N_MVR16, N_MVR17, N_MVR18, N_MVR19, N_MVR20, N_MVR21, N_MVR22, N_MVR23
 };
 
+/*
 const uint16_t PROGMEM MotorNeuronsB[] = {
 N_DB1, N_DB2, N_DB3, N_DB4, N_DB5, N_DB6, N_DB7, N_VB1, N_VB2, N_VB3, N_VB4,
 N_VB5, N_VB6, N_VB7, N_VB8, N_VB9, N_VB10, N_VB11
@@ -31,5 +32,15 @@ const uint16_t PROGMEM MotorNeuronsA[] = {
 N_DA1, N_DA2, N_DA3, N_DA4, N_DA5, N_DA6, N_DA7, N_DA8, N_DA9,
 N_VA1, N_VA2, N_VA3, N_VA4, N_VA5, N_VA6, N_VA7, N_VA8, N_VA9, N_VA10, N_VA11,
 N_VA12
+};
+*/
+
+// Significant motor neurons (e.g. ones that are good indicators for locomotion direction)
+const uint16_t PROGMEM SigMotorNeuronsB[] = {
+N_VB2, N_VB3, N_VB4, N_VB5, N_VB6
+};
+
+const uint16_t PROGMEM SigMotorNeuronsA[] = {
+N_VA1, N_VA2
 };
 

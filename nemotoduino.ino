@@ -17,6 +17,9 @@
 // Total number of connected neurons (first word in ROM)
 uint16_t const N_MAX = (uint16_t)NeuralROM[0];
 
+// Running average of activity for 'significant' motor neurons
+float SigMotorNeuronAvg = 1.0;
+
 //
 // Structs
 //
@@ -153,7 +156,7 @@ void DischargeNeuron(uint16_t N_ID) {
 // Complete one cycle ('tick') of the nematode neural system
 void NeuralCycle() {
   for(int i = 0; i < N_MAX; i++) {
-    if (fabs(GetCurrState(i)) > N_THRESHOLD) {
+    if (GetCurrState(i) > N_THRESHOLD) {
       DischargeNeuron(i);
     }
   }
@@ -186,9 +189,19 @@ void ActivateMuscles() {
   // Gather totals on left and right side muscles
   for(int i = 0; i < N_NBODYMUSCLES; i++) {
     uint16_t leftId = pgm_read_word_near(LeftBodyMuscles+i);
-    uint16_t rightId = pgm_read_word_near(RightBodyMuscles+i); 
+    uint16_t rightId = pgm_read_word_near(RightBodyMuscles+i);
 
-    bodyTotal += (abs(GetNextState(leftId)) + abs(GetNextState(rightId)));
+    int16_t leftVal = GetNextState(leftId);
+    int16_t rightVal = GetNextState(rightId);
+
+    if(leftVal < 0) {
+      leftVal = 0;
+    }
+    if(rightVal < 0) {
+      rightVal = 0;
+    }
+
+    bodyTotal += (leftVal + rightVal);
 
     SetNextState(leftId, 0.0);
     SetNextState(rightId, 0.0);
@@ -202,56 +215,67 @@ void ActivateMuscles() {
     //uint16_t rightId = RightBodyMuscles[i]; 
 
     uint16_t leftId = pgm_read_word_near(LeftNeckMuscles+i);
-    uint16_t rightId = pgm_read_word_near(RightNeckMuscles+i); 
+    uint16_t rightId = pgm_read_word_near(RightNeckMuscles+i);
 
-    leftNeckTotal += GetNextState(leftId);
-    rightNeckTotal += GetNextState(rightId);
+    int16_t leftVal = GetNextState(leftId);
+    int16_t rightVal = GetNextState(rightId);
+
+    if(leftVal < 0) {
+      leftVal = 0;
+    }
+    if(rightVal < 0) {
+      rightVal = 0;
+    }
+
+    leftNeckTotal += leftVal;
+    rightNeckTotal += rightVal;
 
     SetNextState(leftId, 0.0);
     SetNextState(rightId, 0.0);
   }
 
 
-  int32_t normBodyTotal = 255.0 * ((float) bodyTotal) / 550.0;
+  int32_t normBodyTotal = 255.0 * ((float) bodyTotal) / 600.0;
   Serial.println(normBodyTotal);
 
   // Log A and B type motor neuron activity
-  int8_t motorNeuronASum = 0;
-  int8_t motorNeuronBSum = 0;
+  float motorNeuronASum = 0.0;
+  float motorNeuronBSum = 0.0;
 
-  for(int i = 0; i < N_MOTORB; i++) {
-    uint8_t motorBId = pgm_read_word_near(MotorNeuronsB+i);
+  for(int i = 0; i < N_SIGMOTORB; i++) {
+    uint8_t motorBId = pgm_read_word_near(SigMotorNeuronsB+i);
     if(GetCurrState(motorBId) > N_THRESHOLD) {
       motorNeuronBSum += 1;
     }
   }
 
-  for(int i = 0; i < N_MOTORA; i++) {
-    uint8_t motorAId = pgm_read_word_near(MotorNeuronsA+i);
+  for(int i = 0; i < N_SIGMOTORA; i++) {
+    uint8_t motorAId = pgm_read_word_near(SigMotorNeuronsA+i);
     if(GetCurrState(motorAId) > N_THRESHOLD) {
       motorNeuronASum += 1;
     }
   }
 
-  // Set speed for the motors
-  //uint16_t muscleTotal = abs(leftTotal) + abs(rightTotal);
-  
-  int32_t leftTotal = leftNeckTotal + normBodyTotal;
-  int32_t rightTotal = rightNeckTotal + normBodyTotal;
+  // Sum (with weights) and add contribution to running average of significant activity
+  float motorNeuronSumTotal = (-1*motorNeuronASum) + motorNeuronBSum;
 
-  Serial.println(leftNeckTotal);
-  Serial.println(rightNeckTotal);
+  SigMotorNeuronAvg = (motorNeuronSumTotal + (5.0*SigMotorNeuronAvg))/(5.0 + 1.0);
+
+  // Set left and right totals, scale neck muscle contribution
+  int32_t leftTotal = (4*leftNeckTotal) + normBodyTotal;
+  int32_t rightTotal = (4*rightNeckTotal) + normBodyTotal;
+
+  Serial.println(4*leftNeckTotal);
+  Serial.println(4*rightNeckTotal);
   Serial.println();
 
-  //float motorNeuronRatio = ((float) motorNeuronASum) / ((float) motorNeuronBSum);
-
-  if(motorNeuronASum >= (2.7*motorNeuronBSum)) {
+  if(SigMotorNeuronAvg < 0.42) { // Magic number read off from c_matoduino simulation
     RunMotors(-1*rightTotal, -1*leftTotal);
   }
   else {
     RunMotors(rightTotal, leftTotal);
   }
-  delay(100);
+  //delay(10);
 }
 
 //
