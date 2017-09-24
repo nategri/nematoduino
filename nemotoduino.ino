@@ -236,7 +236,7 @@ void ActivateMuscles() {
 
 
   int32_t normBodyTotal = 255.0 * ((float) bodyTotal) / 600.0;
-  Serial.println(normBodyTotal);
+  //Serial.println(normBodyTotal);
 
   // Log A and B type motor neuron activity
   float motorNeuronASum = 0.0;
@@ -265,9 +265,9 @@ void ActivateMuscles() {
   int32_t leftTotal = (4*leftNeckTotal) + normBodyTotal;
   int32_t rightTotal = (4*rightNeckTotal) + normBodyTotal;
 
-  Serial.println(4*leftNeckTotal);
-  Serial.println(4*rightNeckTotal);
-  Serial.println();
+  //Serial.println(4*leftNeckTotal);
+  //Serial.println(4*rightNeckTotal);
+  //Serial.println();
 
   if(SigMotorNeuronAvg < 0.42) { // Magic number read off from c_matoduino simulation
     RunMotors(-1*rightTotal, -1*leftTotal);
@@ -275,7 +275,7 @@ void ActivateMuscles() {
   else {
     RunMotors(rightTotal, leftTotal);
   }
-  //delay(10);
+  delay(100);
 }
 
 //
@@ -287,7 +287,7 @@ void setup() {
 
   
   //Uncomment for serial debugging
-  Serial.begin(9600);
+  //Serial.begin(9600);
   
 
   // initialize state arrays
@@ -317,7 +317,7 @@ void loop() {
   // put your main code here, to run repeatedly:
   long dist = SensorDistance();
 
-  if(dist < 50.0) {
+  if(dist < 25.0) {
     // Status LED on
     StatusLedOn();
     
