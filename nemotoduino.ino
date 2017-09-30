@@ -78,8 +78,8 @@ int16_t GetCurrState(uint16_t N_ID) {
 
 void SetNextState(uint16_t N_ID, int16_t val) {
   if(N_ID < N_MAX) {
-    if(val > N_THRESHOLD) {
-      NextConnectedState[N_ID] = N_THRESHOLD+1;
+    if(val > 127) {
+      NextConnectedState[N_ID] = 127;
     }
     else if(val < -128) {
       NextConnectedState[N_ID] = -128;
