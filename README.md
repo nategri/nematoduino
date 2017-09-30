@@ -13,4 +13,11 @@ The C. Elegans 'chemotaxis' (food sensing) neurons are stimulated by
 default, while the 'nose touch' response neurons are stimulated when
 the robot senses an obstacle at a distance of 50 cm or less.
 
+#References
+
+Busbice, Timothy. *Extending the C. Elegans Connectome to Robotics*. SOLID
+2014 Conference.
+
+#License
+
 Nematoduino is covered under the GNU Public License v2.

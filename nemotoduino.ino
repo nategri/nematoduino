@@ -81,8 +81,8 @@ void SetNextState(uint16_t N_ID, int16_t val) {
     if(val > N_THRESHOLD) {
       NextConnectedState[N_ID] = N_THRESHOLD+1;
     }
-    else if(val < (-1*N_THRESHOLD)) {
-      NextConnectedState[N_ID] = -1*N_THRESHOLD-1;
+    else if(val < -128) {
+      NextConnectedState[N_ID] = -128;
     }
     else {
       NextConnectedState[N_ID] = val;
