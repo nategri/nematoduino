@@ -5,9 +5,12 @@ Nematoduino is an Arduino UNO-compatible robotic emulation of a C. elegans nemat
 ## Locomotion
 
 <p align="center"><img width=700 src="/images/flow.jpeg"></p>
-<p align="center"><b>Figure 1.</b><br><i>Flowchart depicting how motor output is generated</i>.</p>
+<p align="center"><b>Figure 1.</b><br><i>Flowchart depicting how motor output is generated.</i>.</p>
 
-<p align="center"><img width=700 src="/images/signature_motor_neurons.png"></p>
+<p align="center"><img width=500 src="/images/signature_motor_neurons.png"></p>
+<p align="center"><b>Figure 2.</b><br><i>A and B-type motor neuron activation in the connectome simulation during
+chemotaxis (first half of time-series), and nose-touch (second half) neural input. Neurons that make good indicators
+for forward/reverse are circled.</i>.</p>
 
 ## References
 
