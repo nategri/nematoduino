@@ -4,9 +4,9 @@ Nematoduino is an Arduino UNO-compatible robotic emulation of a C. elegans nemat
 
 ## Locomotion
 
-<img src="/images/flow.jpeg">
+<img align="center" src="/images/flow.jpeg">
 
-<img src="/images/signature_motor_neurons.png">
+<img align="center" src="/images/signature_motor_neurons.png">
 
 ## References
 
