@@ -56,8 +56,12 @@ URL: http://lox.uoregon.edu/papers/ab1998.pdf
 
 ## Related Projects
 
-Busbice, T., Garrett, G., Churchill G. Github repository. URL: https://github.com/Connectome/GoPiGo  
+Busbice, T., Garrett, G., Churchill G. *GoPiGo C. elegans Connectome Code*. Github repository.
+URL: https://github.com/Connectome/GoPiGo  
 *Notes: Propgenitor of this project. Connectome model originates from file connectome.py.*
+
+Griffith, N. Github Repository. *c_matoduino*. URL: https://github.com/nategri/c_matoduino
+*Notes: Author's own work. A pure C implementation of the connectome model useful for plotting purposes.*
 
 Olmos, F. V. *Robot gusano con arduino, paso a paso.* Article URL: https://goo.gl/Pc9fBg Pastebin URL: https://pastebin.com/NbXUu0gh  
 *Notes: Appears to be a more or less straight translation of the Busbice Python code. Runs on an Arduino Mega.*
