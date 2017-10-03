@@ -60,7 +60,7 @@ Busbice, T., Garrett, G., Churchill G. *GoPiGo C. elegans Connectome Code*. Gith
 URL: https://github.com/Connectome/GoPiGo  
 *Notes: Propgenitor of this project. Connectome model originates from file connectome.py.*
 
-Griffith, N. Github repository. *c_matoduino*. URL: https://github.com/nategri/c_matoduino
+Griffith, N. Github repository. *c_matoduino*. URL: https://github.com/nategri/c_matoduino  
 *Notes: Author's own work. A pure C implementation of the connectome model useful for plotting purposes.*
 
 Olmos, F. V. *Robot gusano con arduino, paso a paso.* Article URL: https://goo.gl/Pc9fBg Pastebin URL: https://pastebin.com/NbXUu0gh  
