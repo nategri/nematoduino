@@ -1,5 +1,7 @@
 ## Description
 
+<p align="center"><img src="/images/nematoduino.gif"></p>
+
 Nematoduino is an Arduino UNO-compatible robotic emulation of a C. elegans nematode.
 
 ## Locomotion
