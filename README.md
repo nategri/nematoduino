@@ -8,7 +8,7 @@ At the core of the simulation is a spiking neural network incorporating 300 neur
 biological worm's connectome, along with associated muscle cells. This implementation is based on
 prior work [1], but with the following improvements:
 
-* A compressed representaion of the connectome network (8 kilobytes)
+* A compressed representation of the connectome network (8 kilobytes)
 * Ability to run on the extremely flexible Arduino UNO platform
 * A biologically motivated conntectome-motor interface
 
