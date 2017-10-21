@@ -4,40 +4,38 @@ const uint8_t spdBoost = 0;
 const uint8_t turnTime = 0;
 
 void MotorsInit() {
-  pinMode(leftMotorPinA, OUTPUT);
-  pinMode(leftMotorPinB, OUTPUT);
-  pinMode(rightMotorPinA, OUTPUT);
-  pinMode(rightMotorPinB, OUTPUT);
+  pinMode(leftMotorPinPwm, OUTPUT);
+  pinMode(leftMotorPinDir, OUTPUT);
+  pinMode(rightMotorPinPwm, OUTPUT);
+  pinMode(rightMotorPinDir, OUTPUT);
 }
 
 void rightMotorForward(uint8_t spd) {
-  analogWrite(rightMotorPinA, spd);
-  digitalWrite(rightMotorPinB, LOW);
+  digitalWrite(rightMotorPinDir, LOW);
+  analogWrite(rightMotorPinPwm, spd);
 }
 
 void rightMotorBackward(uint8_t spd) {
-  digitalWrite(rightMotorPinA, LOW);
-  analogWrite(rightMotorPinB, spd);
+  digitalWrite(rightMotorPinDir, HIGH);
+  analogWrite(rightMotorPinPwm, spd);
 }
 
 void rightMotorOff() {
-  digitalWrite(rightMotorPinA, LOW);
-  digitalWrite(rightMotorPinB, LOW);
+  digitalWrite(rightMotorPinPwm, 0);
 }
 
 void leftMotorForward(uint8_t spd) {
-  analogWrite(leftMotorPinA, spd);
-  digitalWrite(leftMotorPinB, LOW);
+  digitalWrite(leftMotorPinDir, LOW);
+  analogWrite(leftMotorPinPwm, spd);
 }
 
 void leftMotorBackward(uint8_t spd) {
-  digitalWrite(leftMotorPinA, LOW);
-  analogWrite(leftMotorPinB, spd);
+  digitalWrite(leftMotorPinDir, HIGH);
+  analogWrite(leftMotorPinPwm, spd);
 }
 
 void leftMotorOff() {
-  digitalWrite(leftMotorPinA, LOW);
-  digitalWrite(leftMotorPinB, LOW);
+  digitalWrite(leftMotorPinPwm, 0);
 }
 
 void RunMotors(int16_t leftSpd, int16_t rightSpd) {

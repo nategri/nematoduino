@@ -1,4 +1,5 @@
 #include <avr/pgmspace.h>
+#include <EEPROM.h>
 
 #include "motors.h"
 #include "sensor.h"
@@ -8,7 +9,6 @@
 #include "muscles.h"
 
 #include "status_led.h"
-#include "button.h"
 
 //
 // Global constants
@@ -265,15 +265,18 @@ void ActivateMuscles() {
   int32_t leftTotal = (4*leftNeckTotal) + normBodyTotal;
   int32_t rightTotal = (4*rightNeckTotal) + normBodyTotal;
 
+  int32_t normLeftTotal = ((float) leftTotal) / 1.9;
+  int32_t normRightTotal = ((float) rightTotal) / 1.9;
+
   //Serial.println(4*leftNeckTotal);
   //Serial.println(4*rightNeckTotal);
   //Serial.println();
 
   if(SigMotorNeuronAvg < 0.42) { // Magic number read off from c_matoduino simulation
-    RunMotors(-1*rightTotal, -1*leftTotal);
+    RunMotors(-1*normRightTotal, -1*normLeftTotal);
   }
   else {
-    RunMotors(rightTotal, leftTotal);
+    RunMotors(normRightTotal, normLeftTotal);
   }
   delay(100);
 }
@@ -302,14 +305,16 @@ void setup() {
   // Initialize status LED
   StatusLedInit();
 
-  // Initialize button
-  ButtonInit();
-
-  // Loop until pressed
-  while(true) {
-    if(ButtonPress()) {
-      break;
+  // Uses EEPROM to implement reset switch as
+  // toggle for running/not running
+  if (EEPROM.read(0x0) == 0) {
+    EEPROM.write(0x0, 1);
+    while(true) {
+      delay(100);
     }
+  }
+  else {
+    EEPROM.write(0x0, 0);
   }
 }
 

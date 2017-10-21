@@ -2,11 +2,10 @@
 #define pin_config_h
 
 // Motor pins
-const uint8_t rightMotorPinA = 9;
-const uint8_t rightMotorPinB = 10;
-
-const uint8_t leftMotorPinA = 3;
-const uint8_t leftMotorPinB = 11;
+const uint8_t rightMotorPinPwm = 3;
+const uint8_t leftMotorPinPwm = 11;
+const uint8_t rightMotorPinDir = 12;
+const uint8_t leftMotorPinDir = 13;
 
 // Button pin (configured so that on is LOW)
 const uint8_t buttonPin = 13;
