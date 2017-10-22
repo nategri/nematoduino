@@ -2,19 +2,26 @@
 #define pin_config_h
 
 // Motor pins
-const uint8_t rightMotorPinPwm = 3;
+/*const uint8_t rightMotorPinPwm = 3;
 const uint8_t leftMotorPinPwm = 11;
 const uint8_t rightMotorPinDir = 12;
-const uint8_t leftMotorPinDir = 13;
+const uint8_t leftMotorPinDir = 13;*/
 
-// Button pin (configured so that on is LOW)
-const uint8_t buttonPin = 13;
+#define R_MOTOR_PWM 3
+#define L_MOTOR_PWM 11
+#define R_MOTOR_DIR 12
+#define L_MOTOR_DIR 13
 
 // Transmit and receive pins for distance sensor
-const uint8_t tPin = 2;
-const uint8_t rPin = 4;
+//const uint8_t tPin = 2;
+//const uint8_t rPin = 4;
 
-// Pin for status LED (turns on when nose touch neurons stimulated)
-const uint8_t statusPin = 12;
+#define SENSOR_T 2
+#define SENSOR_R 4
+
+// Pin for LED shield
+//const uint8_t ledShieldPin = 9;
+
+#define LED_SHIELD 9
 
 #endif

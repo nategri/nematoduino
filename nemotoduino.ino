@@ -1,6 +1,10 @@
 #include <avr/pgmspace.h>
 #include <EEPROM.h>
 
+//#include <Adafruit_GFX.h>
+#include <Adafruit_NeoPixel.h>
+#include <Adafruit_NeoMatrix.h>
+
 #include "motors.h"
 #include "sensor.h"
 
@@ -8,7 +12,7 @@
 #include "neural_rom.h"
 #include "muscles.h"
 
-#include "status_led.h"
+#include "led_shield.h"
 
 //
 // Global constants
@@ -19,6 +23,14 @@ uint16_t const N_MAX = (uint16_t)NeuralROM[0];
 
 // Running average of activity for 'significant' motor neurons
 float SigMotorNeuronAvg = 1.0;
+
+// Global object for LED control
+Adafruit_NeoMatrix NeoMatrix = Adafruit_NeoMatrix(5,
+                                             8,
+                                             LED_SHIELD,
+                                             NEO_MATRIX_TOP+NEO_MATRIX_RIGHT+NEO_MATRIX_COLUMNS+NEO_MATRIX_PROGRESSIVE,
+                                             NEO_GRB+NEO_KHZ800);
+LedShield* screen;
 
 //
 // Structs
@@ -184,7 +196,7 @@ void HandleIdleNeurons() {
 //
 
 void ActivateMuscles() {
-  int32_t bodyTotal = 0;
+  uint16_t bodyTotal = 0;
 
   // Gather totals on left and right side muscles
   for(int i = 0; i < N_NBODYMUSCLES; i++) {
@@ -208,8 +220,8 @@ void ActivateMuscles() {
   }
 
   // Gather total for neck muscles
-  int32_t leftNeckTotal = 0;
-  int32_t rightNeckTotal = 0;
+  uint16_t leftNeckTotal = 0;
+  uint16_t rightNeckTotal = 0;
   for(int i = 0; i < N_NNECKMUSCLES; i++) {
     //uint16_t leftId = LeftBodyMuscles[i];
     //uint16_t rightId = RightBodyMuscles[i]; 
@@ -235,12 +247,12 @@ void ActivateMuscles() {
   }
 
 
-  int32_t normBodyTotal = 255.0 * ((float) bodyTotal) / 600.0;
+  uint16_t normBodyTotal = 255.0 * ((float) bodyTotal) / 600.0;
   //Serial.println(normBodyTotal);
 
   // Log A and B type motor neuron activity
-  float motorNeuronASum = 0.0;
-  float motorNeuronBSum = 0.0;
+  uint8_t motorNeuronASum = 0;
+  uint8_t motorNeuronBSum = 0;
 
   for(int i = 0; i < N_SIGMOTORB; i++) {
     uint8_t motorBId = pgm_read_word_near(SigMotorNeuronsB+i);
@@ -256,6 +268,9 @@ void ActivateMuscles() {
     }
   }
 
+  // Plot on the shield
+  screen->plotSigMotorNeurons(motorNeuronASum, motorNeuronBSum);
+  /*
   // Sum (with weights) and add contribution to running average of significant activity
   float motorNeuronSumTotal = (-1*motorNeuronASum) + motorNeuronBSum;
 
@@ -265,6 +280,7 @@ void ActivateMuscles() {
   int32_t leftTotal = (4*leftNeckTotal) + normBodyTotal;
   int32_t rightTotal = (4*rightNeckTotal) + normBodyTotal;
 
+  // Re-normalize for appropriate signal to motors
   int32_t normLeftTotal = ((float) leftTotal) / 1.9;
   int32_t normRightTotal = ((float) rightTotal) / 1.9;
 
@@ -278,6 +294,7 @@ void ActivateMuscles() {
   else {
     RunMotors(normRightTotal, normLeftTotal);
   }
+  */
   delay(100);
 }
 
@@ -290,8 +307,23 @@ void setup() {
 
   
   //Uncomment for serial debugging
-  //Serial.begin(9600);
+  Serial.begin(9600);
+
+  screen = new LedShield(&NeoMatrix);
   
+  /*uint8_t testArr[] = {0, 0, 0, 0, 0};
+  // LED SHIELD TEST
+  while(true) {
+    testArr[0] = B100010;
+    testArr[1] = 0;
+    screen->newRow(testArr);
+    delay(100);
+    testArr[0] = B100010;
+    testArr[1] = B100010;
+    screen->newRow(testArr);
+    delay(100);
+  }*/
+
 
   // initialize state arrays
   StatesInit();
@@ -300,10 +332,7 @@ void setup() {
   MotorsInit();
 
   // Initialize sensor
-  SensorInit();
-
-  // Initialize status LED
-  StatusLedInit();
+  //SensorInit();
 
   // Uses EEPROM to implement reset switch as
   // toggle for running/not running
@@ -320,12 +349,12 @@ void setup() {
 
 void loop() {
   // put your main code here, to run repeatedly:
-  long dist = SensorDistance();
+  //long dist = SensorDistance();
+  long dist = 10.0;
 
-  if(dist < 25.0) {
-    // Status LED on
-    StatusLedOn();
-    
+  Serial.print("Loop once");
+
+  if(dist < 25.0) {    
     // Nose touch neurons
     PingNeuron(N_FLPR);
     PingNeuron(N_FLPL);
@@ -340,9 +369,6 @@ void loop() {
     NeuralCycle();
   }
   else {
-    // Status LED off
-    StatusLedOff();
-    
     // Chemotaxis neurons
     PingNeuron(N_ADFL);
     PingNeuron(N_ADFR);
