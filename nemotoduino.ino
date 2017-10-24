@@ -1,10 +1,6 @@
 #include <avr/pgmspace.h>
 #include <EEPROM.h>
 
-//#include <Adafruit_GFX.h>
-#include <Adafruit_NeoPixel.h>
-#include <Adafruit_NeoMatrix.h>
-
 #include "motors.h"
 #include "sensor.h"
 
@@ -25,11 +21,6 @@ uint16_t const N_MAX = (uint16_t)NeuralROM[0];
 float SigMotorNeuronAvg = 1.0;
 
 // Global object for LED control
-Adafruit_NeoMatrix NeoMatrix = Adafruit_NeoMatrix(5,
-                                             8,
-                                             LED_SHIELD,
-                                             NEO_MATRIX_TOP+NEO_MATRIX_RIGHT+NEO_MATRIX_COLUMNS+NEO_MATRIX_PROGRESSIVE,
-                                             NEO_GRB+NEO_KHZ800);
 LedShield* screen;
 
 //
@@ -176,6 +167,8 @@ void NeuralCycle() {
   ActivateMuscles();
   HandleIdleNeurons();
   CopyStates();
+
+  screen->showMotorNeurons(CurrConnectedState);
 }
 
 // Flush neurons that have been idle for a while
@@ -269,8 +262,8 @@ void ActivateMuscles() {
   }
 
   // Plot on the shield
-  screen->plotSigMotorNeurons(motorNeuronASum, motorNeuronBSum);
-  /*
+  //screen->plotSigMotorNeurons(motorNeuronASum, motorNeuronBSum);
+  
   // Sum (with weights) and add contribution to running average of significant activity
   float motorNeuronSumTotal = (-1*motorNeuronASum) + motorNeuronBSum;
 
@@ -294,7 +287,7 @@ void ActivateMuscles() {
   else {
     RunMotors(normRightTotal, normLeftTotal);
   }
-  */
+  
   delay(100);
 }
 
@@ -307,23 +300,9 @@ void setup() {
 
   
   //Uncomment for serial debugging
-  Serial.begin(9600);
+  //Serial.begin(9600);
 
-  screen = new LedShield(&NeoMatrix);
-  
-  /*uint8_t testArr[] = {0, 0, 0, 0, 0};
-  // LED SHIELD TEST
-  while(true) {
-    testArr[0] = B100010;
-    testArr[1] = 0;
-    screen->newRow(testArr);
-    delay(100);
-    testArr[0] = B100010;
-    testArr[1] = B100010;
-    screen->newRow(testArr);
-    delay(100);
-  }*/
-
+  screen = new LedShield();
 
   // initialize state arrays
   StatesInit();
@@ -332,7 +311,7 @@ void setup() {
   MotorsInit();
 
   // Initialize sensor
-  //SensorInit();
+  SensorInit();
 
   // Uses EEPROM to implement reset switch as
   // toggle for running/not running
@@ -349,12 +328,12 @@ void setup() {
 
 void loop() {
   // put your main code here, to run repeatedly:
-  //long dist = SensorDistance();
-  long dist = 10.0;
+  long dist = SensorDistance();
+  //long dist = 30.0;
 
-  Serial.print("Loop once");
-
-  if(dist < 25.0) {    
+  if(dist < 25.0) {
+    //screen->oneLedOn();
+        
     // Nose touch neurons
     PingNeuron(N_FLPR);
     PingNeuron(N_FLPL);
@@ -369,6 +348,8 @@ void loop() {
     NeuralCycle();
   }
   else {
+    //screen->oneLedOff();
+    
     // Chemotaxis neurons
     PingNeuron(N_ADFL);
     PingNeuron(N_ADFR);
