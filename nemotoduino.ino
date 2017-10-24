@@ -281,7 +281,7 @@ void ActivateMuscles() {
   //Serial.println(4*rightNeckTotal);
   //Serial.println();
 
-  if(SigMotorNeuronAvg < 0.42) { // Magic number read off from c_matoduino simulation
+  if(SigMotorNeuronAvg < 0.27) { // Magic number read off from c_matoduino simulation
     RunMotors(-1*normRightTotal, -1*normLeftTotal);
   }
   else {

@@ -1,0 +1,87 @@
+Neuron,Landmark,Landmark Position,Weight,Neurotransmitter,Neuropeptides,Function
+ADEL,Sensory,0,1,Dopamine,,mechanosensory
+ADER,Sensory,0,1,Dopamine,,mechanosensory
+ADFL,Sensory,0,1,Serotonin,,Chemosensory
+ADFR,Sensory,0,1,Serotonin,,Chemosensory
+ADLL,Sensory,0,1,FMRFamide,,"chemosensory, odorsensory, nociceptive"
+ADLR,Sensory,0,1,FMRFamide,,"chemosensory, odorsensory, nociceptive"
+AFDL,Sensory,0,1,Glutamate,,thermosensory
+AFDR,Sensory,0,1,Glutamate,,thermosensory
+ALML,SensoryNB,0,1,Glutamate,,mechanosensory
+ALMR,SensoryNB,0,1,Glutamate,,mechanosensory
+ALNL,Sensory,1,1,Acetylcholine,,mechanosensory
+ALNR,Sensory,1,1,Acetylcholine,,mechanosensory
+AQR,Sensory,0,1,Glutamate,,oxygen sensor
+ASEL,Sensory,0,1,FMRFamide,,chemosensory
+ASER,Sensory,0,1,FMRFamide,,chemosensory
+ASGL,Sensory,0,1,Glutamate,,chemosensory
+ASGR,Sensory,0,1,Glutamate,,chemosensory
+ASHL,Sensory,0,1,Glutamate,"Express neuropeptide-like proteins, NLP-3 and NLP-15 (Nathoo et al., 2001). Express the FMRFamide-related neuropeptide (FaRP), FLP-21","osmosensory, mechanosensory, odorsensory, nociceptive"
+ASHR,Sensory,0,1,Glutamate,"Express neuropeptide-like proteins, NLP-3 and NLP-15 (Nathoo et al., 2001). Express the FMRFamide-related neuropeptide (FaRP), FLP-22","osmosensory, mechanosensory, odorsensory, nociceptive"
+ASIL,Sensory,0,1,Glutamate,,chemosensory
+ASIR,Sensory,0,1,Glutamate,,chemosensory
+ASJL,Sensory,0,1,Glutamate,,
+ASJR,Sensory,0,1,Glutamate,,
+ASKL,Sensory,0,1,Glutamate,,chemosensory
+ASKR,Sensory,0,1,Glutamate,,chemosensory
+AVG,SensoryNB,1,1,Glutamate,,
+AVM,SensoryNB,0,1,Glutamate,,mechanosensory
+AWAL,Sensory,0,1,Serotonin,,odorsensory
+AWAR,Sensory,0,1,Serotonin,,odorsensory
+AWBL,Sensory,0,1,Glutamate,,odorsensory
+AWBR,Sensory,0,1,Glutamate,,odorsensory
+AWCL,Sensory,0,1,Glutamate,,odorsensory
+AWCR,Sensory,0,1,Glutamate,,odorsensory
+BAGL,Sensory,0,1,Glutamate,,
+BAGR,Sensory,0,1,Glutamate,,
+CEPDL,Sensory,0,1,Dopamine,,putative mechanosensory
+CEPDR,Sensory,0,1,Dopamine,,putative mechanosensory
+CEPVL,Sensory,0,1,Dopamine,,putative mechanosensory
+CEPVR,Sensory,0,1,Dopamine,,putative mechanosensory
+FLPL,Sensory,0,1,Glutamate,,mechanosensory
+FLPR,Sensory,0,1,Glutamate,,mechanosensory
+IL1DL,Sensory,0,1,Glutamate,,mechanosensory
+IL1DR,Sensory,0,1,Glutamate,,mechanosensory
+IL1L,Sensory,0,1,Glutamate,,mechanosensory
+IL1R,Sensory,0,1,Glutamate,,mechanosensory
+IL1VL,Sensory,0,1,Glutamate,,mechanosensory
+IL1VR,Sensory,0,1,Glutamate,,mechanosensory
+IL2DL,Sensory,0,1,Serotonin,,chemosensory
+IL2DR,Sensory,0,1,Serotonin,,chemosensory
+IL2L,Sensory,0,1,Serotonin,,chemosensory
+IL2R,Sensory,0,1,Serotonin,,chemosensory
+IL2VL,Sensory,0,1,Serotonin,,chemosensory
+IL2VR,Sensory,0,1,Serotonin,,chemosensory
+OLLL,Sensory,0,1,Tyramine,,putative mechanosensory
+OLLR,Sensory,0,1,Tyramine,,putative mechanosensory
+OLQDL,Sensory,0,1,Glutamate,,mechanosensory
+OLQDR,Sensory,0,1,Glutamate,,mechanosensory
+OLQVL,Sensory,0,1,Glutamate,,mechanosensory
+OLQVR,Sensory,0,1,Glutamate,,mechanosensory
+PDEL,Sensory,1,1,Dopamine,,mechanosensory
+PDER,Sensory,1,1,Dopamine,,mechanosensory
+PHAL,Sensory,1,1,Glutamate,,chemosensory
+PHAR,Sensory,1,1,Glutamate,,chemosensory
+PHBL,Sensory,1,1,Serotonin,,chemosensory
+PHBR,Sensory,1,1,Serotonin,,chemosensory
+PHCL,Sensory,1,1,Dopamine,,mechanosensory
+PHCR,Sensory,1,1,Dopamine,,mechanosensory
+PLML,SensoryNB,1,1,Glutamate,,mechanosensory
+PLMR,SensoryNB,1,1,Glutamate,,mechanosensory
+PLNL,Sensory,1,1,Acetylcholine,,
+PLNR,Sensory,1,1,Acetylcholine,,
+PQR,Sensory,1,1,Glutamate,,"(oxygen sensor), putative mechanosensory"
+PVM,SensoryNB,0,1,Glutamate,,mechanosensory
+PVR,Sensory,1,1,Glutamate,,
+URADL,Sensory,0,1,Acetylcholine,,
+URADR,Sensory,0,1,Acetylcholine,,
+URAVL,Sensory,0,1,Acetylcholine,,
+URAVR,Sensory,0,1,Acetylcholine,,
+URBL,Sensory,0,1,Acetylcholine,,
+URBR,Sensory,0,1,Acetylcholine,,
+URXL,Sensory,0,1,Glutamate,,oxygen sensor
+URXR,Sensory,0,1,Glutamate,,oxygen sensor
+URYDL,Sensory,0,1,Serotonin,,
+URYDR,Sensory,0,1,Serotonin,,
+URYVL,Sensory,0,1,Serotonin,,
+URYVR,Sensory,0,1,Serotonin,,
