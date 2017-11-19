@@ -13,10 +13,11 @@ prior work [1], but with the following improvements:
 * Ability to run on the extremely flexible Arduino UNO platform
 * A biologically motivated conntectome-motor interface
 
-In its current form the nematoduino software consumes 13542 bytes (42%) of the program memory
-of an UNO-compatible board, and 825 bytes (40%) of the SRAM, leaving plenty of room for experimentation
-and further development. It's my hope that nematoduino will end up in the hands of a lot of students
-and neurorobotics hobbyists!
+In its current form the nematoduino software consumes 13542 bytes (42%) of the
+program memory of an UNO-compatible board, with global variables consuming
+825 bytes (40%) of the SRAM, leaving plenty of room for experimentation and
+further development. It's my hope that nematoduino will end up in the hands of a
+lot of students and neurorobotics hobbyists!
 
 ## Locomotion
 
