@@ -10,6 +10,8 @@
 
 #include "led_shield.h"
 
+#include "calibration.h"
+
 //
 // Global constants
 //
@@ -168,7 +170,7 @@ void NeuralCycle() {
   HandleIdleNeurons();
   CopyStates();
 
-  screen->showMotorNeurons(CurrConnectedState);
+  //screen->showMotorNeurons(CurrConnectedState);
 }
 
 // Flush neurons that have been idle for a while
@@ -270,25 +272,29 @@ void ActivateMuscles() {
   SigMotorNeuronAvg = (motorNeuronSumTotal + (5.0*SigMotorNeuronAvg))/(5.0 + 1.0);
 
   // Set left and right totals, scale neck muscle contribution
-  int32_t leftTotal = (4*leftNeckTotal) + normBodyTotal;
-  int32_t rightTotal = (4*rightNeckTotal) + normBodyTotal;
+  int32_t leftTotal = (6*leftNeckTotal) + normBodyTotal;
+  int32_t rightTotal = (6*rightNeckTotal) + normBodyTotal;
 
   // Re-normalize for appropriate signal to motors
-  int32_t normLeftTotal = ((float) leftTotal) / 1.9;
-  int32_t normRightTotal = ((float) rightTotal) / 1.9;
+  int32_t normLeftTotal = ((float) leftTotal) / 1.5;
+  int32_t normRightTotal = ((float) rightTotal) / 1.5;
 
   //Serial.println(4*leftNeckTotal);
   //Serial.println(4*rightNeckTotal);
   //Serial.println();
 
   if(SigMotorNeuronAvg < 0.27) { // Magic number read off from c_matoduino simulation
-    RunMotors(-1*normRightTotal, -1*normLeftTotal);
+    //RunMotors(-1*normRightTotal, -1*normLeftTotal);
+    RunMotorsPID(-1*normLeftTotal, -1*normRightTotal, 1000);
   }
   else {
-    RunMotors(normRightTotal, normLeftTotal);
+    //RunMotors(normRightTotal, normLeftTotal);
+    RunMotorsPID(normLeftTotal, normRightTotal, 1000);
   }
+
+  screen->showMuscles(leftTotal, rightTotal, bodyTotal);
   
-  delay(100);
+  delay(180);
 }
 
 //
@@ -297,18 +303,26 @@ void ActivateMuscles() {
 
 void setup() {
   // put your setup code here, to run once:
-
   
   //Uncomment for serial debugging
   //Serial.begin(9600);
+
+  /*CalibrateMotor(&leftMotorForwardCal);
+  delay(100000);*/
+
+  // Initialize motors
+  //MotorsInitPID();
+
+  //RunMotors(255, 255);
+  //delay(10);
+  //MotorSimple(80);
+  //delay(100000);
+  RunMotorsPID(40, 40, 1000000);
 
   screen = new LedShield();
 
   // initialize state arrays
   StatesInit();
-
-  // Initialize motors
-  MotorsInit();
 
   // Initialize sensor
   SensorInit();
