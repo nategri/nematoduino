@@ -7,8 +7,9 @@ const uint8_t leftMotorPinPwm = 11;
 const uint8_t rightMotorPinDir = 12;
 const uint8_t leftMotorPinDir = 13;*/
 
-#define L_ENCODER 6
-#define R_ENCODER 7
+#define ROT_ENCODER 7
+
+#define BUZZER 4
 
 #define R_MOTOR_PWM 10
 #define L_MOTOR_PWM 11

@@ -8,7 +8,7 @@
 #include "neural_rom.h"
 #include "muscles.h"
 
-#include "led_shield.h"
+//#include "led_shield.h"
 
 #include "calibration.h"
 
@@ -23,7 +23,7 @@ uint16_t const N_MAX = (uint16_t)NeuralROM[0];
 float SigMotorNeuronAvg = 1.0;
 
 // Global object for LED control
-LedShield* screen;
+//LedShield* screen;
 
 //
 // Structs
@@ -284,15 +284,15 @@ void ActivateMuscles() {
   //Serial.println();
 
   if(SigMotorNeuronAvg < 0.27) { // Magic number read off from c_matoduino simulation
-    //RunMotors(-1*normRightTotal, -1*normLeftTotal);
-    RunMotorsPID(-1*normLeftTotal, -1*normRightTotal, 1000);
+    RunMotors(-1*normRightTotal, -1*normLeftTotal);
+    //RunMotorsPID(-1*normLeftTotal, -1*normRightTotal, 1000);
   }
   else {
-    //RunMotors(normRightTotal, normLeftTotal);
-    RunMotorsPID(normLeftTotal, normRightTotal, 1000);
+    RunMotors(normRightTotal, normLeftTotal);
+    //RunMotorsPID(normLeftTotal, normRightTotal, 1000);
   }
 
-  screen->showMuscles(leftTotal, rightTotal, bodyTotal);
+  //screen->showMuscles(leftTotal, rightTotal, bodyTotal);
   
   delay(180);
 }
@@ -305,7 +305,9 @@ void setup() {
   // put your setup code here, to run once:
   
   //Uncomment for serial debugging
-  //Serial.begin(9600);
+  Serial.begin(9600);
+
+  Serial.println("Hello");
 
   /*CalibrateMotor(&leftMotorForwardCal);
   delay(100000);*/
@@ -317,9 +319,39 @@ void setup() {
   //delay(10);
   //MotorSimple(80);
   //delay(100000);
-  RunMotorsPID(40, 40, 1000000);
 
-  screen = new LedShield();
+  InitCalibrationJumper();
+  Serial.println("Cal");
+  PerformMotorCalibration();
+  LoadMotorCalibration();
+
+  MotorsInit();
+
+  uint8_t leftSpd = CalFunction(&leftMotorForwardCal, 9.0);
+  uint8_t rightSpd = CalFunction(&rightMotorForwardCal, 9.0);
+  Serial.println(leftSpd);
+  Serial.println(rightSpd);
+
+  leftMotorForward(leftSpd);
+  rightMotorForward(rightSpd);
+  //leftMotorForward(100);
+  //rightMotorForward(100);
+
+  //MeasureMotor(&leftMotorForwardCal, leftSpd);
+  //MeasureMotor(&rightMotorForwardCal, rightSpd);
+
+  delay(100000);
+
+  /*if(CalibrationJumperPresent()) {
+    Serial.println("Cal");
+    PerformMotorCalibration();
+  }
+  else {
+    Serial.println("No cal");
+    LoadMotorCalibration();
+  }*/
+
+  //screen = new LedShield();
 
   // initialize state arrays
   StatesInit();

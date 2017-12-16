@@ -37,7 +37,7 @@ void MotorsInit() {
   pinMode(R_MOTOR_DIR, OUTPUT);
 }
 
-void MotorsInitPID() {
+/*void MotorsInitPID() {
   MotorsInit();
   LeftEncoderIn = analogRead(L_ENCODER);
   RightEncoderIn = analogRead(R_ENCODER);
@@ -47,7 +47,7 @@ void MotorsInitPID() {
 
   LeftPID.SetMode(AUTOMATIC);
   RightPID.SetMode(AUTOMATIC);
-}
+}*/
 
 void MotorSimple(uint8_t spd) {
   digitalWrite(R_MOTOR_DIR, LOW);
@@ -59,14 +59,14 @@ void MotorSimple(uint8_t spd) {
 void rightMotorForward(uint8_t spd) {
   digitalWrite(R_MOTOR_DIR, LOW);
   //analogWrite(R_MOTOR_PWM, 255);
-  //delay(6);
+  //delay(8);
   analogWrite(R_MOTOR_PWM, spd);
 }
 
 void rightMotorBackward(uint8_t spd) {
   digitalWrite(R_MOTOR_DIR, HIGH);
-  analogWrite(R_MOTOR_PWM, 255);
-  delay(6);
+  //analogWrite(R_MOTOR_PWM, 255);
+  //delay(8);
   analogWrite(R_MOTOR_PWM, spd);
 }
 
@@ -77,14 +77,14 @@ void rightMotorOff() {
 void leftMotorForward(uint8_t spd) {
   digitalWrite(L_MOTOR_DIR, LOW);
   //analogWrite(L_MOTOR_PWM, 255);
-  //delay(6);
+  //delay(8);
   analogWrite(L_MOTOR_PWM, spd);
 }
 
 void leftMotorBackward(uint8_t spd) {
   digitalWrite(L_MOTOR_DIR, HIGH);
-  analogWrite(L_MOTOR_PWM, 255);
-  delay(6);
+  //analogWrite(L_MOTOR_PWM, 255);
+  //delay(8);
   analogWrite(L_MOTOR_PWM, spd);
 }
 
@@ -92,7 +92,7 @@ void leftMotorOff() {
   digitalWrite(L_MOTOR_PWM, 0);
 }
 
-void RunMotorsPID(int16_t leftSpd, int16_t rightSpd, uint32_t count) {
+/*void RunMotorsPID(int16_t leftSpd, int16_t rightSpd, uint32_t count) {
   
   LeftDesiredSpd = leftSpd;
   RightDesiredSpd = rightSpd;
@@ -140,9 +140,9 @@ void RunMotorsPID(int16_t leftSpd, int16_t rightSpd, uint32_t count) {
       delay(turnTime);
     }
   }
-}
+}*/
 
-/*void RunMotors(int16_t leftSpd, int16_t rightSpd) {
+void RunMotors(int16_t leftSpd, int16_t rightSpd) {
   uint8_t leftSpdMotor;
   uint8_t rightSpdMotor;
   
@@ -185,7 +185,7 @@ void RunMotorsPID(int16_t leftSpd, int16_t rightSpd, uint32_t count) {
   else if((rightSpd < 0) && (leftSpd > 0)) {
     delay(turnTime);
   }
-}*/
+}
 
 void MotorsOff() {
   leftMotorOff();
