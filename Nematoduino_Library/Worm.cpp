@@ -5,7 +5,7 @@ Worm::Worm() {
   this->_leftMuscle = 0;
   this->_rightMuscle = 0;
 
-  this->_motorFireAvg = 0.0;
+  this->_motorFireAvg = 16.0;
 
   ctm_init(&this->_connectome);
 }
@@ -100,21 +100,26 @@ void Worm::_update(const uint16_t* stim_neuron, int len_stim_neuron) {
   // Log A and B type motor neuron activity
   double motor_neuron_sum = 0;
 
+  /*
   for(int i = 0; i < MOTOR_B; i++) {
     uint16_t id = READ_WORD(motor_neuron_b, i);
     motor_neuron_sum += ctm_get_discharge(ctm, id);
   }
+  */
 
   for(int i = 0; i < MOTOR_A; i++) {
     uint16_t id = READ_WORD(motor_neuron_a, i);
     motor_neuron_sum += ctm_get_discharge(ctm, id);
   }
 
-  const double motor_total = MOTOR_A + MOTOR_B;
+  //const double motor_total = MOTOR_A + MOTOR_B;
+  const double motor_total = MOTOR_A;
+  const int avg_window = 15;
+  double motor_neuron_percent = 100.0 * motor_neuron_sum / motor_total;
 
-  this->_motorFireAvg = (motor_neuron_sum + (motor_total*this->_motorFireAvg))/(motor_total + 1.0);
+  this->_motorFireAvg = (motor_neuron_percent + (avg_window*this->_motorFireAvg))/(avg_window + 1.0);
 
-  if(this->_motorFireAvg > 5.5) { // Magic number read off from c_matoduino simulation
+  if(this->_motorFireAvg > 19.0) { // Magic number read off from c_matoduino simulation
     left_total *= -1;
     right_total *= -1;
   }

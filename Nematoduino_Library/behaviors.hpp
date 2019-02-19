@@ -2,7 +2,7 @@
 #define BEHAVIORS_H
 
 #define CHEMOTAXIS_LEN 8
-#define NOSE_TOUCH_LEN 8
+#define NOSE_TOUCH_LEN 10
 
 #include <stdint.h>
 

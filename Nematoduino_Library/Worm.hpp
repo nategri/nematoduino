@@ -21,7 +21,7 @@ class Worm {
   private:
     int _leftMuscle;
     int _rightMuscle;
-    double _motorFireAvg;
+    double _motorFireAvg; // Percentage of A-type motor neurons firing
 
     Connectome _connectome;
     void _update(const uint16_t*, int);
