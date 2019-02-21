@@ -124,6 +124,6 @@ void Worm::_update(const uint16_t* stim_neuron, int len_stim_neuron) {
     right_total *= -1;
   }
 
-  this->_leftMuscle = left_total / 0.1;
-  this->_rightMuscle = right_total / 0.1;
+  this->_leftMuscle = left_total;
+  this->_rightMuscle = right_total;
 }

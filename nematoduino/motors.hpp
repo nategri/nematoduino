@@ -7,8 +7,8 @@
 #define LFWD_PIN 14
 #define LBCK_PIN 15
 
-#define RFWD_PIN 16
-#define RBCK_PIN 17
+#define RFWD_PIN 17
+#define RBCK_PIN 16
 
 #define SPDBOOST 0
 #define TURN_TIME 0
