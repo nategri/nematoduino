@@ -1,3 +1,6 @@
+#ifndef MOTORS_HPP
+#define MOTORS_HPP
+
 #include <avr/pgmspace.h>
 #include <Arduino.h>
 
@@ -28,3 +31,5 @@ class Motors {
     void _rightBackward(uint8_t);
     void _rightOff();
 };
+
+#endif

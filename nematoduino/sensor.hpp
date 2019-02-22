@@ -1,3 +1,6 @@
+#ifndef SENSOR_HPP
+#define SENSOR_HPP
+
 // References:
 // http://www.instructables.com/id/Simple-Arduino-and-HC-SR04-Example/
 // https://www.waveshare.com/wiki/AlphaBot2-Ar (demo code)
@@ -23,3 +26,5 @@ class Sensor {
     long _ultrasonicDetectDistance();
     long _ultrasonicDistanceThreshold;
 };
+
+#endif

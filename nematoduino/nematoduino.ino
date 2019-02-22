@@ -1,3 +1,17 @@
+//
+// Settings
+//
+
+// Factor for converting muscle weights to motor speeds
+#define MUSCLE_FACTOR 0.5
+
+// How long (in ms) to run motors for each 'tick' of the simulation
+#define MOTOR_RUN_TIME 100
+
+//
+// Robot code
+//
+
 #include <avr/pgmspace.h>
 
 #include <Worm.hpp>
@@ -24,7 +38,10 @@ void loop() {
   int16_t leftMuscle = worm.getLeftMuscle();
   int16_t rightMuscle = worm.getRightMuscle();
 
-  motors.run(leftMuscle, rightMuscle);
+  int16_t leftMotor = MUSCLE_FACTOR*leftMuscle;
+  int16_t rightMotor = MUSCLE_FACTOR*rightMuscle;
 
-  delay(100);
+  motors.run(leftMotor, rightMotor);
+
+  delay(MOTOR_RUN_TIME);
 }
