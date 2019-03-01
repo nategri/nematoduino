@@ -34,7 +34,7 @@ a reversal of the worm's locomotion. Keeping this in mind, the activation of the
 simulation was inspected during chemotaxis and nose touch (see Figure 2), and several groups of neurons
 were found the be good indicators for forward and reverse locomotion.
 
-<p align="center"><img width=500 src="/images/signature_motor_neurons.png"></p>
+<p align="center"><img width=500 src="/images/avg_motor_neurons.png"></p>
 <p align="center"><b>Figure 2.</b><br><i>A and B-type motor neuron activation in the connectome simulation during
 chemotaxis (first half of time-series), and nose-touch (second half). Neurons that make good indicators
 for forward/reverse are circled.</i>.</p>
