@@ -3,10 +3,13 @@
 //
 
 // Factor for converting muscle weights to motor speeds
-#define MUSCLE_FACTOR 0.5
+#define MUSCLE_FACTOR 0.67
 
 // How long (in ms) to run motors for each 'tick' of the simulation
 #define MOTOR_RUN_TIME 100
+
+// Distance (in cm) at which ultrasonic sensor should trigger
+#define SENSOR_DIST 10.0
 
 //
 // Robot code
@@ -21,7 +24,7 @@
 
 Worm worm;
 Motors motors;
-Sensor sensor(25.0);
+Sensor sensor(SENSOR_DIST);
 
 void setup() {
 }

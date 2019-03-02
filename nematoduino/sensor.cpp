@@ -62,7 +62,7 @@ long Sensor::_ultrasonicDetectDistance() {
   // Read off length
   long pulseWidth = pulseIn(ECHO_PIN, HIGH);
 
-  // Calculate distance
+  // Calculate distance in centimeters
   long distance = (pulseWidth/29.1) / 2;
 
   return distance;
