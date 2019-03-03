@@ -14,7 +14,12 @@ That said, nematoduino is easy to port to other two wheeled robot platforms, and
 The `Nematoduino_Library` folder in this directory contains the nematoduino Arduino library. This library provides a simple interface to the simulated worm's biological state through the `.getLeftMuscle()` and `.getRightMuscle()` methods, allowing hobbyists to potentially bring C. elegans-on-an-Arduino to a variety of different contexts.
 
 #### Nanotode
-The nematoduino Arduino library uses [nanotode](https://github.com/nategri/nanotode) for the core of its C. elegans neural simulation. Nanotode is written in pure C, and so is intended as a general framework for running simple C. elegans spiking neural networks in resource constrained contexts. For an example of another project of mine that uses nanotode, check out [nematode.farm](https://github.com/nategri/nematode_farm).
+The nematoduino Arduino library uses
+[nanotode](https://github.com/nategri/nanotode) for the core of its C. elegans
+neural simulation. Nanotode is written in pure C, and so is intended as a
+general framework for running simple C. elegans spiking neural networks in
+resource constrained contexts. For an example of another project of mine that
+uses nanotode, check out [nematode.farm](https://nematode.farm).
 
 ## Description
 
@@ -68,11 +73,12 @@ using this connectome model.
 
 ## Other C. elegans Projects by This Author
 
-#### [nematode.farm](https://github.com/nategri/nematode_farm)
+#### [nematode.farm](https://nematode.farm)
 A simple WASM and SDL2 based game utilizing C. elegans simulations
 
 #### [nanotode](https://github.com/nategri/nanotode)
-A framework for running lightweight simulations of the C. elegans nematode's nervous system. Forms the core of the simulation seen in nematode.farm.
+A framework for running lightweight simulations of the C. elegans nematode's
+nervous system. Forms the core of the simulation seen in this project and nematode.farm.
 
 ## References
 
