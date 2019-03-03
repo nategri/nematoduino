@@ -1,5 +1,5 @@
 <p align="center"><img src="/images/nematoduino.gif"></p>
-<p align="center"><i>For a longer duration clip, [click here](https://youtu.be/u406m-v4Y3Y)</i>.</p>
+<p align="center"><i>For a longer duration clip, click here: https://youtu.be/u406m-v4Y3Y</i>.</p>
 
 ## Update
 
