@@ -55,8 +55,8 @@ worm, as they provide the direction of locomotion (see Ref. 3).
 <p align="center"><img width=700 src="/images/flow.jpeg"></p>
 <p align="center"><b>Figure 1.</b><br><i>Flowchart depicting how motor output is generated.</i>.</p>
 
-Forward and backward movement in the biological worm are governed by A and B-type motor neurons, with a nose touch resulting in
-a reversal of the worm's locomotion. Since backward motion is driven by B-type cells (see Fig.1 of Ref. 2), the average activation of these motor neurons in the connectome is used as a trigger for reverse locomotion in the robot.
+Backward and forward movement in the biological worm are governed by A and B-type motor neurons, with a nose touch resulting in
+a reversal of the worm's locomotion. Since backward motion is driven by A-type cells (see Fig.1 of Ref. 2), the average activation of these motor neurons in the connectome is used as a trigger for reverse locomotion in the robot.
 
 <p align="center"><img width=500 src="/images/avg_motor_neurons.png"></p>
 <p align="center"><b>Figure 2.</b><br><i>Average A and B-type motor neuron activation in the connectome simulation during
