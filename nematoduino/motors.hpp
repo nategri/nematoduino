@@ -3,15 +3,18 @@
 
 #include <avr/pgmspace.h>
 #include <Arduino.h>
+#include "oseppRobot.h"
 
-#define LSPD_PIN 6
-#define RSPD_PIN 5
+// OSEPP motor pin configuration
+// Left motor: dir=12, pwm=11, forward=HIGH
+// Right motor: dir=8, pwm=3, forward=LOW
+#define LEFT_DIR_PIN 12
+#define LEFT_PWM_PIN 11
+#define LEFT_FWD_LEVEL HIGH
 
-#define LFWD_PIN 14
-#define LBCK_PIN 15
-
-#define RFWD_PIN 17
-#define RBCK_PIN 16
+#define RIGHT_DIR_PIN 8
+#define RIGHT_PWM_PIN 3
+#define RIGHT_FWD_LEVEL LOW
 
 #define SPDBOOST 0
 #define TURN_TIME 0
@@ -23,13 +26,8 @@ class Motors {
     void off();
 
   private:
-    void _leftForward(uint8_t);
-    void _leftBackward(uint8_t);
-    void _leftOff();
-
-    void _rightForward(uint8_t);
-    void _rightBackward(uint8_t);
-    void _rightOff();
+    OseppTBMotor _leftMotor;
+    OseppTBMotor _rightMotor;
 };
 
 #endif
